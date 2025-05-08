@@ -1,2 +1,3 @@
 **PCMN - Protein Contact Map Network**
+
 This script takes two similar pdb structures i.e two conformers extracted from a moleculation simulation trajectory or from crystalls and by using the contact map explorer algorithm by "David W.H. Swenson and Sander Roet", it predicts the contact map for both structures and also finds the unique contacts in them. By mentioning the residues of interest, one can generate a network of contact close reisdues. Be default this script uses 0.35nm distance to calculate contacts and the script has provision to change it. This script is inshort an supporting file for the original contact map explorer. 

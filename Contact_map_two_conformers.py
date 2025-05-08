@@ -61,7 +61,7 @@ def find_contacts(trajectoryA, trajectoryB, filenameA, filenameB, cut_off):
     plot_contact_map(trajA_contacts, filenameA)
     plot_contact_map(trajB_contacts, filenameB)
     diff = cm.AtomMismatchedContactDifference(trajB_contacts, trajA_contacts)
-    fig3, ax3 = diff.residue_contacts.plot(figsize=(8, 6), dpi=300)
+    fig3, ax3 = diff.residue_contacts.plot(figsize=(6, 6), dpi=300)
     plt.xlabel("Residue")
     plt.ylabel("Residue")
     fig3.savefig(f"diff_contacts_{filenameA}_{filenameB}.pdf")
@@ -77,7 +77,7 @@ def plot_contact_map(contacts, filename):
     dict = from_json_str.to_json()
     with open(f"sample_{filename}.json", "w") as outfile:
         outfile.write(dict)
-    figA, axA = contacts.residue_contacts.plot(figsize=(8, 6), dpi=300)
+    figA, axA = contacts.residue_contacts.plot(figsize=(6, 6), dpi=300)
     plt.xlabel("Residue")
     plt.ylabel("Residue")
     figA.savefig(f"{filename}_contacts.pdf")
@@ -125,17 +125,20 @@ if __name__ == '__main__':
     parser.add_argument("pdbA_file", help="Path to the PDB file 1")
     parser.add_argument("pdbB_file", help="Path to the PDB_file 2")
     parser.add_argument("cut_off", type=float, default=0.35, help="Cutoff for distance. default is 0.35")
+    parser.add_argument("--residue_indices", nargs='*', help="A list of residues code with indexes to be analyzed for example: LYS171")
     args = parser.parse_args()
 
     trajA = md.load(args.pdbA_file, top=args.pdbA_file)
     trajB = md.load(args.pdbB_file, top=args.pdbB_file)
     cut_off = args.cut_off
+    residues_list = args.residue_indices if args.residue_indices is not None else ["LYS171", "HIS201", "TYR202", "LEU203", "GLY204", "LYS205", "GLU239", "ASP258", "GLN395", "KHB360"] # Example default indices
+
     filenameA = f"{'.'.join(args.pdbA_file.split('.')[:-1])}"
     filenameB = f"{'.'.join(args.pdbB_file.split('.')[:-1])}"
     
     graphA, graphB = find_contacts(trajA, trajB, filenameA, filenameB, cut_off)
 
-    residues_list = ["LYS171", "HIS201", "TYR202", "LEU203", "GLY204", "LYS205", "GLU239", "ASP258", "GLN395", "KHB360"]
+    
 
     subgraphs_A = {}
     subgraphs_B = {}
@@ -146,6 +149,5 @@ if __name__ == '__main__':
             subgraphs_A[res] = subgraphA
         if subgraphB:
             subgraphs_B[res] = subgraphB
-
     plot_multiple_contact_network_graphs(subgraphs_A, fname_prefix=filenameA)
     plot_multiple_contact_network_graphs(subgraphs_B, fname_prefix=filenameB)
